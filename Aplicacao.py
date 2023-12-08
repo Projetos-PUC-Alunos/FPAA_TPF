@@ -1,49 +1,18 @@
 import time
-from matplotlib import pyplot as plt
-import networkx as nx
-from guloso.Guloso import distribuir_rotas_guloso, distribuir_rotas_guloso_ord
 from backtracking.Backtracking import distribuir_rotas_backtracking
 from GeradorDeProblemas import GeradorDeProblemas
 
-
 def main():
-    contador = 1
     qtd_rotas = 6
-    num_caminhoes = 3
+    qtd_conjunto = 3
+    dispersao = 85
+    whileTime = True
     
-    while True:
-        conjunto = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, contador, 4)
-        tempo_medio = medir_tempo_execucao(conjunto, num_caminhoes, contador)
-        print(f"Tamanho do conjunto: {contador}, Tempo médio: {tempo_medio:.6f} segundos")
-        # algoritmoGuloso(rotas, num_caminhoes)
-        backtracking(conjunto, num_caminhoes)
-        
-        if tempo_medio > 30:
-            break
+    while whileTime:
+        conjunto = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, qtd_conjunto, dispersao)
+        whileTime = medir_tempo_execucao(qtd_rotas, conjunto, dispersao, 3)
 
-        qtd_rotas += 1
-        # contador+=1
-        # if contador % 10 == 0:
-        #     qtd_rotas+=1
-         
-
-
-def algoritmoGuloso(rotas, num_caminhoes):
-    print(f'----------------------- GULOSO -----------------------\n')
-    
-    distribuicao, diferenca = distribuir_rotas_guloso_ord(rotas, num_caminhoes)
-    
-    for i, caminhao in enumerate(distribuicao):
-        print(f'Caminhão {i + 1}: {caminhao}')
-    print(f'Menor diferença de quilometragem: {diferenca} km')
-    
-    distribuicao, diferenca = distribuir_rotas_guloso(rotas, num_caminhoes)
-
-    # Imprima a distribuição e a diferença de quilometragem
-    for i, caminhao in enumerate(distribuicao):
-        print(f'Caminhão {i + 1}: {caminhao}')
-    print(f'Menor diferença de quilometragem: {diferenca} km')
-    
+        qtd_rotas += 1   
     
 def backtracking(rotas, num_caminhoes):
     print(f'----------------------- BACKTRACKING -----------------------\n')
@@ -56,17 +25,29 @@ def backtracking(rotas, num_caminhoes):
             print(f"Caminhão {i + 1}: {caminhao}")
         print(f"Diferença mínima de quilometragem: {melhor_diferenca} km")
     
-def medir_tempo_execucao(rotas, num_caminhoes, tamanho_conjunto):
+def medir_tempo_execucao(qtd_rotas, rotas, dispersao, num_caminhoes):
     tempos_execucao = []
-
-    for _ in range(10):  # Testar 10 vezes para calcular a média
+    tempoMaior = []
+    
+    for i in range(10):  # Testar 10 vezes para calcular a média
         inicio = time.time()
-        backtracking(rotas[:tamanho_conjunto], num_caminhoes)
+        backtracking(rotas, num_caminhoes)
         fim = time.time()
+        
         tempos_execucao.append(fim - inicio)
-
+        
+        print(f"{i} - Tempo da execução: {tempos_execucao[i]}")
+        
+        if tempos_execucao[i] >= 30:
+            tempoMaior.append(tempos_execucao)
+            
+            print(f"Conjunto que ultrapassou: {rotas}")
+            break
     tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
-    return tempo_medio
+    print(f"FINAL: {qtd_rotas}")
+    if tempo_medio > 30.0:
+        return False
+    return True
 
 
 if __name__ == "__main__":

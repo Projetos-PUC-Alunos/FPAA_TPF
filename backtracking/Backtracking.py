@@ -11,7 +11,6 @@ def distribuir_rotas_backtracking(rotas, num_caminhoes):
         nonlocal melhor_diferenca, melhor_distribuicao
 
         if index_rota == len(rotas):
-            # Verifica se a distribuição atual é melhor que a melhor encontrada até agora
             diferenca_atual = diferenca_entre_caminhoes([sum(caminhao) for caminhao in distribuicao_atual])
             if diferenca_atual < melhor_diferenca:
                 melhor_diferenca = diferenca_atual
@@ -21,7 +20,6 @@ def distribuir_rotas_backtracking(rotas, num_caminhoes):
         for i in range(num_caminhoes):
             distribuicao_atual[i].append(rotas[index_rota])
 
-            # Poda: Verifica se vale a pena continuar a busca
             if not poda(distribuicao_atual, index_rota + 1, melhor_diferenca, rotas):
                 distribuicao_recursiva(distribuicao_atual, index_rota + 1)
 
@@ -32,10 +30,14 @@ def distribuir_rotas_backtracking(rotas, num_caminhoes):
 
 def poda(distribuicao_atual, index_rota, melhor_diferenca, sizeRotas):
     quilometragem_caminhoes = [sum(caminhao) for caminhao in distribuicao_atual]
+
+    # Verifica se a distribuição parcial já é pior que a melhor solução encontrada
+    if diferenca_entre_caminhoes(quilometragem_caminhoes) >= melhor_diferenca:
+        return True
+
     if index_rota < len(sizeRotas):
+        # Verifica se a diferença parcial já é menor ou igual à melhor diferença encontrada
         quilometragem_caminhoes.sort()
-        # Verifica se a diferença parcial já é maior que a melhor diferença encontrada
         return diferenca_entre_caminhoes(quilometragem_caminhoes) >= melhor_diferenca
     else:
-        # Verifica se a diferença final é maior que a melhor diferença encontrada
         return diferenca_entre_caminhoes(quilometragem_caminhoes) >= melhor_diferenca
