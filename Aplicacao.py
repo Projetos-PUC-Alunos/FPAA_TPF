@@ -7,8 +7,8 @@ from divisaoconquista.Divisao_Conquista import divide_rotas
 
 def main():
     qtd_rotas = 6
-    qtd_conjunto = 3
-    dispersao = 85
+    qtd_conjunto = 10
+    dispersao = 75
     whileTime = True
     
     while whileTime:
