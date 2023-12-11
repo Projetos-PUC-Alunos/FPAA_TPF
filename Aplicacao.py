@@ -3,12 +3,14 @@ from backtracking.Backtracking import distribuir_rotas_backtracking
 from GeradorDeProblemas import GeradorDeProblemas
 from divisaoconquista.Divisao_Conquista import distribuir_rotas_divisao_conquista
 from divisaoconquista.Divisao_Conquista import diferenca_entre_caminhoes
+from programacaoDinamica.programacaoDinamica import distribuir_rotas_dinamica
 
 def main():
     qtd_rotas = 6
     qtd_conjunto = 10
     dispersao = 75
     whileTime = True
+    iterator = 0
     
     conjuntoResultante = []
     
@@ -27,6 +29,13 @@ def main():
     rotas_teste = [rotas1, rotas2]
 
     divisaoconquista(rotas_teste, 3)
+
+    qtd_rotas_T = qtd_rotas = len(conjuntoResultante)
+    while iterator < 10:
+        medir_tempo_prog_dinamica(qtd_rotas, conjuntoResultante, 3)
+        qtd_rotas += qtd_rotas_T
+        conjuntoResultante = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, qtd_conjunto, dispersao)
+        iterator += 1
 
 
 def medir_tempo_execucao(qtd_rotas, rotas, dispersao, num_caminhoes):
@@ -75,6 +84,31 @@ def divisaoconquista(rotas, num_caminhoes):
         for i, caminhao in enumerate(distribuicao):
             print(f"Caminhão {i + 1}: {caminhao}")
         print(f"Diferença mínima de quilometragem: {diferenca_entre_caminhoes([sum(caminhao) for caminhao in distribuicao])} km")
+
+
+def medir_tempo_prog_dinamica(qtd_rotas, rotas, num_caminhoes):
+    tempos_execucao = []
+    
+    for i in range(10):  # Testar 10 vezes para calcular a média
+        inicio = time.time()
+        programacaodinamica(rotas, num_caminhoes)
+        fim = time.time()
+        
+        tempos_execucao.append(fim - inicio)
+
+    tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
+    print(f"Tempo médio para o conjunto de tamanho {qtd_rotas} foi: {tempo_medio}")
+
+
+def programacaodinamica(rotas, num_caminhoes):
+    print(f'------------------- PROGRAMAÇÃO DINAMICA --------------------\n')
+    
+    for rota in rotas:
+        melhor_distribuicao = distribuir_rotas_dinamica(rota, num_caminhoes)
+
+        print("Distribuição encontrada para minimizar a diferença de quilometragem entre os caminhões:")
+        for i, caminhao in enumerate(melhor_distribuicao):
+            print(f"Caminhão {i + 1}: {caminhao}")
 
 if __name__ == "__main__":
     main()
