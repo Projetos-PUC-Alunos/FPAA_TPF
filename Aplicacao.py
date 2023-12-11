@@ -19,7 +19,7 @@ def main():
         conjunto = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, qtd_conjunto, dispersao)
         whileTime, conjuntoResultante = medir_tempo_execucao(qtd_rotas, conjunto, dispersao, 3)
 
-        qtd_rotas += 1  
+        qtd_rotas += 1
     
     # Conjuntos de rotas fornecidos
     rotas1 = [40, 36, 38, 29, 32, 28, 31, 35, 31, 30, 32, 30, 29, 39, 35, 38, 39, 35, 32, 38, 32, 33, 29, 33, 29, 39, 28]
@@ -29,14 +29,18 @@ def main():
     rotas_teste = [rotas1, rotas2]
 
     divisaoconquista(rotas_teste, 3)
-
-    qtd_rotas_T = qtd_rotas = len(conjuntoResultante)
+    
+    qtd_rotas -= 1
+    qtd_rotas_T = qtd_rotas
+    
+    arquivo = open('progDin.txt', 'w')
     while iterator < 10:
-        medir_tempo_prog_dinamica(qtd_rotas, conjuntoResultante, 3)
+        medir_tempo_prog_dinamica(qtd_rotas, conjuntoResultante, 3, arquivo)
         qtd_rotas += qtd_rotas_T
         conjuntoResultante = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, qtd_conjunto, dispersao)
         iterator += 1
-
+    programacaodinamica(rotas_teste, 3, arquivo)
+    arquivo.close()
 
 def medir_tempo_execucao(qtd_rotas, rotas, dispersao, num_caminhoes):
     tempos_execucao = []
@@ -86,29 +90,33 @@ def divisaoconquista(rotas, num_caminhoes):
         print(f"Diferença mínima de quilometragem: {diferenca_entre_caminhoes([sum(caminhao) for caminhao in distribuicao])} km")
 
 
-def medir_tempo_prog_dinamica(qtd_rotas, rotas, num_caminhoes):
+def medir_tempo_prog_dinamica(qtd_rotas, rotas, num_caminhoes, arquivo):
     tempos_execucao = []
-    
+
     for i in range(10):  # Testar 10 vezes para calcular a média
         inicio = time.time()
-        programacaodinamica(rotas, num_caminhoes)
+        programacaodinamica(rotas, num_caminhoes, arquivo)
         fim = time.time()
         
         tempos_execucao.append(fim - inicio)
 
     tempo_medio = sum(tempos_execucao) / len(tempos_execucao)
+    arquivo.write(f"Tempo médio para o conjunto de tamanho {qtd_rotas} foi: {tempo_medio}\n")
     print(f"Tempo médio para o conjunto de tamanho {qtd_rotas} foi: {tempo_medio}")
 
 
-def programacaodinamica(rotas, num_caminhoes):
+def programacaodinamica(rotas, num_caminhoes, arquivo):
+    arquivo.write(f'------------------- PROGRAMAÇÃO DINAMICA --------------------\n')
     print(f'------------------- PROGRAMAÇÃO DINAMICA --------------------\n')
     
     for rota in rotas:
         melhor_distribuicao = distribuir_rotas_dinamica(rota, num_caminhoes)
 
+        arquivo.write("Distribuição encontrada para minimizar a diferença de quilometragem entre os caminhões:\n")
         print("Distribuição encontrada para minimizar a diferença de quilometragem entre os caminhões:")
         for i, caminhao in enumerate(melhor_distribuicao):
-            print(f"Caminhão {i + 1}: {caminhao}")
+            arquivo.write(f"Caminhão {i + 1}: {caminhao} -- Quilometragem: {sum(caminhao)} km\n")
+            print(f"Caminhão {i + 1}: {caminhao} -- Quilometragem: {sum(caminhao)} km")
 
 if __name__ == "__main__":
     main()
