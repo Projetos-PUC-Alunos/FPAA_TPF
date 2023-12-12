@@ -15,16 +15,16 @@ def distribuir_rotas(rotas, num_caminhoes, kmMedia, tamDiferenca, distribuicao, 
     
     m = len(rotas)
 
-    dp = [[0] * (tamColuna + 1) for _ in range(m + 1)]
+    progDin = [[0] * (tamColuna + 1) for _ in range(m + 1)]
     # Inicializar a primeira coluna com '.'
     for i in range(1, m+1):
-        dp[i][0] = '.'
+        progDin[i][0] = '.'
     # Inicializar a primeira linha com 'F'
     for j in range(1, tamColuna+1):
-        dp[0][j] = 'F'
+        progDin[0][j] = 'F'
         
     # Inicializar primeiro elemento da matriz com 'V'
-    dp[0][0] = 'V'
+    progDin[0][0] = 'V'
     
     i = j = 1
     linha = coluna = 0
@@ -32,27 +32,27 @@ def distribuir_rotas(rotas, num_caminhoes, kmMedia, tamDiferenca, distribuicao, 
     while i < m+1:
         j = 1
         while j < tamColuna+1:
-            if dp[i-1][j] == 'V':
-                dp[i][j] = '.'
-            elif dp[i-1][j-rotas[i-1]] == 'V':
-                dp[i][j] = 'V'
+            if progDin[i-1][j] == 'V':
+                progDin[i][j] = '.'
+            elif progDin[i-1][j-rotas[i-1]] == 'V':
+                progDin[i][j] = 'V'
                 if isBetween(kmMedia, tamDiferenca, j):
                     linha, coluna = i, j
                     i, j = m, tamColuna
             else:
-                dp[i][j] = 'F'
+                progDin[i][j] = 'F'
             
             j += 1
         i += 1
 
 
     while linha > 0 and coluna > 0:
-        if dp[linha][coluna] == 'V':
+        if progDin[linha][coluna] == 'V':
             distribuicao[iterator].append(rotas[linha-1])
             coluna -= rotas[linha-1]
             rotas[linha-1] = -1
             linha -= 1
-        elif dp[linha][coluna] == '.':
+        elif progDin[linha][coluna] == '.':
             linha -= 1
 
     for x in rotas.copy():
