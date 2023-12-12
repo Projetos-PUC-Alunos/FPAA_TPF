@@ -3,7 +3,7 @@ from backtracking.Backtracking import distribuir_rotas_backtracking
 from GeradorDeProblemas import GeradorDeProblemas
 from divisaoconquista.Divisao_Conquista import distribuir_rotas_divisao_conquista
 from divisaoconquista.Divisao_Conquista import diferenca_entre_caminhoes
-from programacaoDinamica.programacaoDinamica import distribuir_rotas_dinamica
+from programacaoDinamica.ProgramacaoDinamica import distribuir_rotas_dinamica
 
 def main():
     qtd_rotas = 6

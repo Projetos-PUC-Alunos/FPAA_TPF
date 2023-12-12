@@ -1,26 +1,84 @@
-def distribuir_rotas_dinamica(rotas, num_caminhoes):
-    qtd_rotas = len(rotas)
+def isBetween(kmMedia, tamDiferenca, valor):
+    limiteInferior = round(kmMedia * (1 - tamDiferenca))
+    limiteSuperior = round(kmMedia * (1 + tamDiferenca))
+    retorno = False
 
-    prog_din = [[float('inf')] * (qtd_rotas + 1) for _ in range(num_caminhoes + 1)]
-    prog_din[0][0] = 0
+    if limiteInferior <= valor <= limiteSuperior:
+        retorno = True
 
-    for i in range(1, num_caminhoes + 1):
-        for j in range(1, qtd_rotas + 1):
-            prog_din[i][j] = min(prog_din[i][j-1], prog_din[i-1][j-1] + rotas[j-1])
+    return retorno
+
+def distribuir_rotas(rotas, num_caminhoes, kmMedia, tamDiferenca, distribuicao, iterator, tamColuna):
+    if iterator == num_caminhoes-1:
+        distribuicao[iterator] = rotas
+        return
     
+    m = len(rotas)
 
-    melhor_distribuicao = [[] for _ in range(num_caminhoes)]
-    copia_num_caminhoes = num_caminhoes 
-    copia_qtd_rotas = qtd_rotas
+    dp = [[0] * (tamColuna + 1) for _ in range(m + 1)]
+    # Inicializar a primeira coluna com '.'
+    for i in range(1, m+1):
+        dp[i][0] = '.'
+    # Inicializar a primeira linha com 'F'
+    for j in range(1, tamColuna+1):
+        dp[0][j] = 'F'
+        
+    # Inicializar primeiro elemento da matriz com 'V'
+    dp[0][0] = 'V'
+    
+    i = j = 1
+    linha = coluna = 0
+
+    while i < m+1:
+        j = 1
+        while j < tamColuna+1:
+            if dp[i-1][j] == 'V':
+                dp[i][j] = '.'
+            elif dp[i-1][j-rotas[i-1]] == 'V':
+                dp[i][j] = 'V'
+                if isBetween(kmMedia, tamDiferenca, j):
+                    linha, coluna = i, j
+                    i, j = m, tamColuna
+            else:
+                dp[i][j] = 'F'
+            
+            j += 1
+        i += 1
 
 
-    while copia_qtd_rotas > 0:
-        melhor_distribuicao[copia_num_caminhoes-1].append(rotas[copia_qtd_rotas-1])
+    while linha > 0 and coluna > 0:
+        if dp[linha][coluna] == 'V':
+            distribuicao[iterator].append(rotas[linha-1])
+            coluna -= rotas[linha-1]
+            rotas[linha-1] = -1
+            linha -= 1
+        elif dp[linha][coluna] == '.':
+            linha -= 1
 
-        if copia_num_caminhoes <= 1:
-            copia_num_caminhoes = num_caminhoes
-        else:
-            copia_num_caminhoes = copia_num_caminhoes - 1
-        copia_qtd_rotas -= 1
+    for x in rotas.copy():
+        if x == -1:
+            rotas.remove(x)
 
-    return melhor_distribuicao
+    iterator+=1
+    distribuir_rotas(rotas, num_caminhoes, kmMedia, tamDiferenca, distribuicao, iterator, tamColuna)
+
+
+def distribuir_rotas_dinamica(rotas, num_caminhoes):
+    rotasCopia = rotas.copy()
+    rotasCopia.sort()
+    kmMedia = sum(rotasCopia)/num_caminhoes
+    tamDiferenca = 0.10
+    tamColuna = round(kmMedia * (1 + tamDiferenca))
+    distribuicao = [[] for _ in range(num_caminhoes)]
+    distribuir_rotas(rotasCopia, num_caminhoes, kmMedia, tamDiferenca, distribuicao, 0, tamColuna)
+
+    return distribuicao
+
+# Execução Local
+'''
+num_caminhoes = 3
+#rotas = [35, 34, 33, 23, 21, 32, 35, 19, 26, 42]
+#rotas = [40, 36, 38, 29, 32, 28, 31, 35, 31, 30, 32, 30, 29, 39, 35, 38, 39, 35, 32, 38, 32, 33, 29, 33, 29, 39, 28]
+rotas = [32, 51, 32, 43, 42, 30, 42, 51, 43, 51, 29, 25, 27, 32, 29, 55, 43, 29, 32, 44, 55, 29, 53, 30, 24, 27]
+melhor_distribuicao = distribuir_rotas_dinamica(rotas, num_caminhoes)
+'''
