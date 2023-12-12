@@ -20,15 +20,18 @@ def main():
         whileTime, conjuntoResultante = medir_tempo_execucao(qtd_rotas, conjunto, dispersao, 3)
 
         qtd_rotas += 1
+        
+    # SE QUISER TESTAR AS ROTAS DE TESTE, DESCOMENTE AS LINHAS 33 À 35, E A LINHA 45
+    # COMENTE AS LINHAS 18 À 22, E AS LINHAS 40 À 44
     
-    # Conjuntos de rotas fornecidos
+    # -------------------------------------------------------------- INICIO TESTE --------------------------------------------------------------
     rotas1 = [40, 36, 38, 29, 32, 28, 31, 35, 31, 30, 32, 30, 29, 39, 35, 38, 39, 35, 32, 38, 32, 33, 29, 33, 29, 39, 28]
     rotas2 = [32, 51, 32, 43, 42, 30, 42, 51, 43, 51, 29, 25, 27, 32, 29, 55, 43, 29, 32, 44, 55, 29, 53, 30, 24, 27]
 
-    # # Adicione os conjuntos de rotas à lista de testes
     rotas_teste = [rotas1, rotas2]
-
-    divisaoconquista(rotas_teste, 3)
+    
+    # backtracking(rotas_teste, 3)
+    # divisaoconquista(rotas_teste, 3)
     
     qtd_rotas -= 1
     qtd_rotas_T = qtd_rotas
@@ -39,8 +42,10 @@ def main():
         qtd_rotas += qtd_rotas_T
         conjuntoResultante = GeradorDeProblemas.geracaoDeRotas(qtd_rotas, qtd_conjunto, dispersao)
         iterator += 1
-    programacaodinamica(rotas_teste, 3, arquivo)
+    # programacaodinamica(rotas_teste, 3, arquivo)
     arquivo.close()
+    
+    # -------------------------------------------------------------- FIM TESTE --------------------------------------------------------------
 
 def medir_tempo_execucao(qtd_rotas, rotas, dispersao, num_caminhoes):
     tempos_execucao = []
