@@ -3,7 +3,7 @@ from backtracking.Backtracking import distribuir_rotas_backtracking
 from GeradorDeProblemas import GeradorDeProblemas
 from divisaoconquista.Divisao_Conquista import distribuir_rotas_divisao_conquista
 from divisaoconquista.Divisao_Conquista import diferenca_entre_caminhoes
-from programacaoDinamica.ProgramacaoDinamica import distribuir_rotas_dinamica
+from programacaoDinamica.programacaoDinamica import distribuir_rotas_dinamica
 
 def main():
     qtd_rotas = 6
@@ -21,7 +21,7 @@ def main():
 
         qtd_rotas += 1
         
-    # SE QUISER TESTAR AS ROTAS DE TESTE, DESCOMENTE AS LINHAS 33 À 35, E A LINHA 45
+    # SE QUISER TESTAR AS ROTAS DE TESTE, DESCOMENTE AS LINHAS 33 E 34, E A LINHA 45
     # COMENTE AS LINHAS 18 À 22, E AS LINHAS 40 À 44
     
     # -------------------------------------------------------------- INICIO TESTE --------------------------------------------------------------
@@ -79,7 +79,7 @@ def backtracking(rotas, num_caminhoes):
 
         print("Distribuição encontrada para minimizar a diferença de quilometragem entre os caminhões:")
         for i, caminhao in enumerate(melhor_distribuicao):
-            print(f"Caminhão {i + 1}: {caminhao}")
+            print(f"Caminhão {i + 1}: {caminhao} --- Quilometragem: {sum(caminhao)}")
         print(f"Diferença mínima de quilometragem: {melhor_diferenca} km")
 
 
